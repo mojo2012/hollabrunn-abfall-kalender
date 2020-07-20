@@ -103,7 +103,7 @@ function fixWasteTYoe($wasteType) {
 		case "Biotonne":
 			return "Biotonne";
 		case "Gelber":
-			return "Gekber Sacj";
+			return "Gelber Sack";
 		case "Restmll":
 			return "Restmüll";
 		default:
