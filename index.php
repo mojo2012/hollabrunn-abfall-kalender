@@ -1,6 +1,8 @@
 <?php
 require "vendor/autoload.php";
 
+error_reporting(E_ALL ^ E_DEPRECATED);
+
 // https://hollabrunn.umweltverbaende.at/?gem_nr=31009&jahr=2020&kat=32&portal=verband&vb=hl
 
 $district_code     = param('vb', 'hl');
@@ -25,11 +27,11 @@ $htmlFileName = $year . "-" . $community_id . "_" . $cat . "_" . $portal . "_" .
 // $html = '<h2>Mittergrabern</h2><div class="tunterlegt">DO &nbsp; 02.07.2020 &nbsp; Altpapier</div>';
 $html = file_get_contents($htmlFileName);
 
-if ($html == false) {
+if ($html == false || is_null($html)) {
 	$html = file_get_contents($serviceUrl);
 }
 
-if ($html !== false) {
+if ($html != false && !is_null($html)) {
 	$htmlFile = fopen($htmlFileName, "w");
 	fwrite($htmlFile, $html);
 	fclose($htmlFile);
@@ -89,7 +91,7 @@ function generateCalendarEntry($date, $summary, $description, $location, $versio
 	$out .= "DTSTART;VALUE=DATE:" . $date->format('Ymd')      . "\r\n";
 	$out .= "DTEND;VALUE=DATE:"   . $date->format('Ymd')      . "\r\n";
 	$out .= "DTSTAMP:"            . $date->format('Ymd\THis\Z') . "\r\n";
-	$out .= "UID:Waste-Feed-"     . $date->format('Y-m-d')      . "-$version\r\n";
+	$out .= "UID:Waste-Feed-"     . $date->format('Y-m-d')      . "-$version-" . rand() . "\r\n";
 	$out .= "CLASS:PUBLIC\r\n";
 	$out .= "CREATED:$version\r\n";
 	$out .= "LOCATION:" . $location . "\r\n"; //@https://www.ietf.org/rfc/rfc2445.txt
