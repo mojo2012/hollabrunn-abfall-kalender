@@ -5,13 +5,13 @@ require "vendor/autoload.php";
 
 $district_code     = param('vb', 'hl');
 $community_id      = param('gem_nr', '31009');
-$cat               = param('kat', '32	');
+$cat               = param('kat', '32');
 $portal            = param('portal', 'verband');
 $filename           = param('filename', "cal.ics");
 $debug             = param('debug', "false") == "true";
 
 $now     = new DateTime();
-$version = '20190108T000000Z'; // modify this when you make changes in the code!
+$version = '20230118T000000Z'; // modify this when you make changes in the code!
 $year    = $now->format("Y");
 
 $serviceUrl = "https://hollabrunn.umweltverbaende.at/"
@@ -20,9 +20,21 @@ $serviceUrl = "https://hollabrunn.umweltverbaende.at/"
 	. "&kat="    . $cat 
 	. "&portal=" . $portal
 	. "&vb="     . $district_code;
+$htmlFileName = $year . "-" . $community_id . "_" . $cat . "_" . $portal . "_" . $district_code . '.html';
 	
 // $html = '<h2>Mittergrabern</h2><div class="tunterlegt">DO &nbsp; 02.07.2020 &nbsp; Altpapier</div>';
-$html = file_get_contents($serviceUrl);
+$html = file_get_contents($htmlFileName);
+
+if ($html == false) {
+	$html = file_get_contents($serviceUrl);
+}
+
+if ($html !== false) {
+	$htmlFile = fopen($htmlFileName, "w");
+	fwrite($htmlFile, $html);
+	fclose($htmlFile);
+}
+
 // $html = str_replace("ü", "&uuml;", $html);
 
 // $html = mb_convert_encoding($html, 'HTML-ENTITIES', "UTF-8");
